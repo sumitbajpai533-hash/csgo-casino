@@ -1,0 +1,12 @@
+{
+  "name": "csgo-reflex-casino",
+  "version": "1.0.0",
+  "description": "Provably Fair Reflex Casino Game",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
