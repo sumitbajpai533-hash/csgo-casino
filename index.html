@@ -98,7 +98,8 @@
         .gta-sub{font-family:'Impact',sans-serif;font-size:40px;color:#39ff14;-webkit-text-stroke:1.5px #000;margin-top:-5px; text-shadow: 0 0 20px rgba(57,255,20,0.6);}
         .tap-msg {color: #fff; font-size: 14px; opacity: 0.6; margin-top: 40px; font-weight: bold; letter-spacing: 2px; animation: pulse 1.5s infinite;}
         @keyframes pulse { 0% {opacity: 0.3;} 50% {opacity: 0.8;} 100% {opacity: 0.3;} }
-         /* --- PRO LOADER & ANTI-CHEAT UI CSS (NO IMPACT ON PHYSICS) --- */
+        
+        /* --- PRO LOADER & ANTI-CHEAT UI CSS --- */
         #pro-loader {
             position: absolute; top: 12px; right: 20px; z-index: 45;
             background: rgba(8, 14, 10, 0.9); border: 1px solid rgba(57,255,20,0.4);
@@ -285,7 +286,6 @@
             lastFrameTime = currentTime;
             if (dt > 25) dt = 16.66;
 
-
             if (gameState === 'IDLE' || gameState === 'ARMED') {
                 trackOffset += speedPerMs * dt;
                 var wrapPoint = (cardsData.length * cardWidth) / 2;
@@ -329,7 +329,7 @@
                 
                 brakeDuration = (2 * distanceD) / speedPerMs;
                 window.brakeElapsed = 0;
-                lastFrameTime = performance.now();  // <-- ADDED (Ghadi Reset)
+                lastFrameTime = performance.now();
 
                 gameState = 'BRAKING';
             }
@@ -371,14 +371,13 @@
                 vibe(20); currentBet = parseFloat(document.getElementById('bet-val').value);
                 if (isNaN(currentBet) || currentBet < 10 || currentBet > vault) return;
                 
-               vault -= currentBet; document.getElementById('v-count').innerText = vault.toFixed(2);
+                vault -= currentBet; document.getElementById('v-count').innerText = vault.toFixed(2);
                 document.getElementById('hud').classList.add('hud-locked');
                 actionBtn.className = "btn-disabled"; actionBtn.innerText = "CONNECTING...";
 
                 roundNonce++;
 
-                // SECURE CRYPTOGRAPHIC PAYLOAD & FLAWLESS ERROR HANDLING
-                 // --- PRO LOADER ON ---
+                // --- PRO LOADER ON ---
                 var loader = document.getElementById('pro-loader');
                 if (loader) {
                     document.getElementById('loader-status').innerText = "LOCKING SHA-256...";
@@ -406,6 +405,7 @@
 
                     predeterminedOutcome = data.outcome; 
                     serverMultiplier = data.multiplier;
+                    
                     // --- POPULATE ANTI-CHEAT UI WITH LIVE SHA-256 PROOFS ---
                     if (data.provablyFairProof) {
                         var hashEl = document.getElementById('ui-hash');
@@ -426,20 +426,13 @@
                     vault += currentBet; 
                     document.getElementById('v-count').innerText = vault.toFixed(2); 
                 });
-                    // FLAWLESS ERROR HANDLING: Refund & Reset
-                    console.error("Bet Error:", err);
-                    alert("SERVER ERROR OR NETWORK DROP! REFUNDING BET."); 
-                    document.getElementById('hud').classList.remove('hud-locked'); 
-                    actionBtn.className = "btn-bet"; actionBtn.innerText = "PLAY"; 
-                    vault += currentBet; 
-                    document.getElementById('v-count').innerText = vault.toFixed(2); 
-                });
             } 
             else if (gameState === 'ARMED') {
                 actionBtn.className = "btn-disabled"; actionBtn.innerText = "BRAKING...";
                 gameState = 'START_BRAKING';
             }
         }
+
         function clearOverlay() {
             if (gameState === 'TOAST_ACTIVE') {
                 vibe(20); document.getElementById('gta-overlay').style.display = 'none';
@@ -448,7 +441,8 @@
                 var actionBtn = document.getElementById('action-btn'); actionBtn.className = "btn-bet"; actionBtn.innerText = "PLAY";
             }
         }
-         function toggleFairness(show) {
+
+        function toggleFairness(show) {
             vibe(15);
             document.getElementById('ui-client').innerText = clientSeed + " (Nonce: " + roundNonce + ")";
             document.getElementById('fairness-modal').style.display = show ? 'flex' : 'none';
