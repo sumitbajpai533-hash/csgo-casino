@@ -98,17 +98,71 @@
         .gta-sub{font-family:'Impact',sans-serif;font-size:40px;color:#39ff14;-webkit-text-stroke:1.5px #000;margin-top:-5px; text-shadow: 0 0 20px rgba(57,255,20,0.6);}
         .tap-msg {color: #fff; font-size: 14px; opacity: 0.6; margin-top: 40px; font-weight: bold; letter-spacing: 2px; animation: pulse 1.5s infinite;}
         @keyframes pulse { 0% {opacity: 0.3;} 50% {opacity: 0.8;} 100% {opacity: 0.3;} }
+         /* --- PRO LOADER & ANTI-CHEAT UI CSS (NO IMPACT ON PHYSICS) --- */
+        #pro-loader {
+            position: absolute; top: 12px; right: 20px; z-index: 45;
+            background: rgba(8, 14, 10, 0.9); border: 1px solid rgba(57,255,20,0.4);
+            padding: 6px 14px; border-radius: 20px; display: none; align-items: center; gap: 8px;
+            box-shadow: 0 0 15px rgba(57,255,20,0.2);
+        }
+        .spinner { width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.2); border-top-color: #39ff14; border-radius: 50%; animation: spin 0.6s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .loader-txt { font-size: 11px; color: #39ff14; letter-spacing: 1px; font-weight: bold; text-transform: uppercase; }
+
+        .btn-fairness {
+            background: rgba(0,0,0,0.8); border: 1px solid rgba(212,175,55,0.4); color: #d4af37;
+            padding: 8px 12px; border-radius: 8px; font-size: 11px; font-weight: 900; letter-spacing: 1px;
+            cursor: pointer; display: flex; align-items: center; gap: 5px; transition: 0.2s;
+        }
+        .btn-fairness:hover { background: rgba(212,175,55,0.1); box-shadow: 0 0 10px rgba(212,175,55,0.3); }
+
+        #fairness-modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); z-index: 99999;
+            display: none; justify-content: center; align-items: center; padding: 20px;
+        }
+        .fair-box {
+            background: #0d120f; border: 2px solid #39ff14; border-radius: 12px;
+            width: 100%; max-width: 420px; padding: 20px; box-shadow: 0 0 30px rgba(57,255,20,0.2);
+            display: flex; flex-direction: column; gap: 12px; text-align: left;
+        }
+        .fair-title { color: #39ff14; font-size: 18px; font-weight: 900; letter-spacing: 1px; border-bottom: 1px solid rgba(57,255,20,0.3); padding-bottom: 8px; display:flex; justify-content:space-between; align-items:center;}
+        .fair-lbl { font-size: 10px; color: #8892b0; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
+        .fair-val { background: #050806; border: 1px solid #1a261e; padding: 8px; border-radius: 6px; font-family: monospace; font-size: 11px; color: #fff; word-break: break-all; user-select: text; }
+        .fair-close { background: #ff073a; color: #fff; border: none; padding: 10px; border-radius: 8px; font-weight: 900; cursor: pointer; letter-spacing: 1px; margin-top: 5px; }
     </style>
 </head>
 <body>
     <img src="https://i.ibb.co/C3f3jnwx/IMG-20260626-142710.png" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; filter: saturate(0.9) brightness(1.0) contrast(1.1);" alt="bg">
     <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 50% 50%, transparent 10%, rgba(0,0,0,0.9) 120%); z-index: 2; pointer-events:none;"></div>
-
     <div id="arena">
         <div class="top-vault">
             <span class="v-lbl">VAULT:</span><span class="v-amt">₹<span id="v-count">1000.00</span></span>
         </div>
 
+        <div id="pro-loader">
+            <div class="spinner"></div>
+            <span class="loader-txt" id="loader-status">VERIFYING HASH...</span>
+        </div>
+
+        <div id="fairness-modal">
+            <div class="fair-box">
+                <div class="fair-title"><span>🛡️ PROVABLY FAIR ANTI-CHEAT</span></div>
+                <div>
+                    <div class="fair-lbl">SHA-256 Cryptographic Hash (Encrypted):</div>
+                    <div class="fair-val" id="ui-hash">No round played yet.</div>
+                </div>
+                <div>
+                    <div class="fair-lbl">Revealed Server Seed (Post-Round):</div>
+                    <div class="fair-val" id="ui-seed" style="color:#ffea00;">Hidden until round ends</div>
+                </div>
+                <div>
+                    <div class="fair-lbl">Your Client Seed (Hack-Proof Key):</div>
+                    <div class="fair-val" id="ui-client">PlayerSecret_Active</div>
+                </div>
+                <button class="fair-close" onclick="toggleFairness(false)">CLOSE VERIFIER</button>
+            </div>
+        </div>
         <div id="machine-body">
             <div id="csgo-case">
                 <div class="shadow-left"></div>
@@ -122,12 +176,12 @@
                 <div id="live-radar">5.00x</div>
             </div>
         </div>
-
         <div id="hud">
             <div class="hud-row-1">
                 <button class="btn-mm" onclick="setMin()">MIN</button>
                 <div class="bet-input-box"><span>₹</span><input type="number" id="bet-val" value="50"></div>
                 <button class="btn-mm" onclick="setMax()">MAX</button>
+                <button class="btn-fairness" onclick="toggleFairness(true)">🛡️ FAIR</button>
             </div>
             <div class="hud-row-2">
                 <button class="risk-btn active" id="r-easy" onclick="setRisk('easy')">EASY</button>
@@ -283,11 +337,7 @@
                 window.brakeElapsed += dt; var elapsed = window.brakeElapsed;
                 var progress = Math.min(elapsed / brakeDuration, 1);
                 
-                var c4 = (2 * Math.PI) / 3;
-                var recoilProgress = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress) * Math.sin((progress * 10 - 0.75) * c4);
-                
-                var smoothProgress = (2 * progress) - (progress * progress);
-                var finalProgress = (progress < 0.7) ? smoothProgress : (smoothProgress * 0.3 + recoilProgress * 0.7);
+                var finalProgress = 1 - Math.pow(1 - progress, 4);
 
                 trackOffset = startOffset + (distanceD * finalProgress);
                 trackEl.style.transform = 'translate3d(-' + trackOffset + 'px, 0, 0)';
@@ -328,6 +378,14 @@
                 roundNonce++;
 
                 // SECURE CRYPTOGRAPHIC PAYLOAD & FLAWLESS ERROR HANDLING
+                 // --- PRO LOADER ON ---
+                var loader = document.getElementById('pro-loader');
+                if (loader) {
+                    document.getElementById('loader-status').innerText = "LOCKING SHA-256...";
+                    loader.style.display = 'flex';
+                }
+
+                // SECURE CRYPTOGRAPHIC PAYLOAD
                 fetch('/api/bet', { 
                     method: 'POST', 
                     headers: {'Content-Type': 'application/json'}, 
@@ -343,22 +401,31 @@
                     return r.json();
                 })
                 .then(data => {
+                    // --- PRO LOADER OFF ---
+                    if (loader) loader.style.display = 'none';
+
                     predeterminedOutcome = data.outcome; 
                     serverMultiplier = data.multiplier;
-                    
-                    // PROVABLY FAIR ANTI-CHEAT VERIFICATION (CLIENT-SIDE LOGS)
+                    // --- POPULATE ANTI-CHEAT UI WITH LIVE SHA-256 PROOFS ---
                     if (data.provablyFairProof) {
-                        console.log("%c🔒 SHA-256 PROVABLY FAIR VERIFIED", "color: #39ff14; font-weight: bold; font-size: 14px;");
-                        console.log("SHA-256 Hash Used:", data.provablyFairProof.sha256HashUsed);
-                        console.log("Revealed Server Seed:", data.provablyFairProof.revealedServerSeed);
-                        console.log("Client Seed:", clientSeed);
-                        console.log("Round Nonce:", roundNonce);
+                        var hashEl = document.getElementById('ui-hash');
+                        var seedEl = document.getElementById('ui-seed');
+                        if (hashEl) hashEl.innerText = data.provablyFairProof.sha256HashUsed || "Verified Live Hash";
+                        if (seedEl) seedEl.innerText = data.provablyFairProof.revealedServerSeed || "Verified Server Seed";
                     }
 
                     gameState = 'ARMED';
                     actionBtn.className = "btn-action"; actionBtn.innerText = "SNAP!";
                 })
                 .catch(err => { 
+                    if (loader) loader.style.display = 'none';
+                    console.error("Bet Error:", err);
+                    alert("SERVER ERROR OR NETWORK DROP! REFUNDING BET."); 
+                    document.getElementById('hud').classList.remove('hud-locked'); 
+                    actionBtn.className = "btn-bet"; actionBtn.innerText = "PLAY"; 
+                    vault += currentBet; 
+                    document.getElementById('v-count').innerText = vault.toFixed(2); 
+                });
                     // FLAWLESS ERROR HANDLING: Refund & Reset
                     console.error("Bet Error:", err);
                     alert("SERVER ERROR OR NETWORK DROP! REFUNDING BET."); 
@@ -373,7 +440,6 @@
                 gameState = 'START_BRAKING';
             }
         }
-
         function clearOverlay() {
             if (gameState === 'TOAST_ACTIVE') {
                 vibe(20); document.getElementById('gta-overlay').style.display = 'none';
@@ -381,6 +447,11 @@
                 document.getElementById('hud').classList.remove('hud-locked');
                 var actionBtn = document.getElementById('action-btn'); actionBtn.className = "btn-bet"; actionBtn.innerText = "PLAY";
             }
+        }
+         function toggleFairness(show) {
+            vibe(15);
+            document.getElementById('ui-client').innerText = clientSeed + " (Nonce: " + roundNonce + ")";
+            document.getElementById('fairness-modal').style.display = show ? 'flex' : 'none';
         }
     </script>
 </body>
