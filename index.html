@@ -476,14 +476,35 @@
         var bgmAudio = document.getElementById('bgm');
         var isAudioStarted = false;
 
-            function playSfxSafe(id) {
-            var sfx = document.getElementById(id);
-            if (sfx) { 
-                sfx.currentTime = 0; 
-                sfx.play().catch(function(e){}); 
+                    // --- MUTE & AUDIO SYSTEM ---
+        var isGlobalMuted = false;
+        
+        function toggleMute() {
+            isGlobalMuted = !isGlobalMuted;
+            var muteBtn = document.getElementById('mute-btn');
+            var bgm = document.getElementById('bgm');
+            
+            if (isGlobalMuted) {
+                muteBtn.innerText = "🔇";
+                muteBtn.style.color = "#ff073a"; // Mute hone par icon Laal (Red) ho jayega
+                muteBtn.style.borderColor = "rgba(255,7,58,0.4)";
+                if (bgm) bgm.muted = true; // BGM ekdam 0 (Band)
+            } else {
+                muteBtn.innerText = "🔊";
+                muteBtn.style.color = "#39ff14"; // Unmute par wapas Neon Green
+                muteBtn.style.borderColor = "rgba(57,255,20,0.4)";
+                if (bgm) bgm.muted = false; // BGM wapas Chalu
             }
-                }
+        }
 
+            function playSfxSafe(id) {
+            // Agar game mute hai aur sound 'click' NAHI hai, tabhi aawaz roko.
+            // Iska matlab 'sfx-click' hamesha bypass hoga aur bajega!
+            if (isGlobalMuted && id !== 'sfx-click') return; 
+            
+            var sfx = document.getElementById(id);
+            if (sfx) { sfx.currentTime = 0; sfx.play().catch(function(e){}); }
+                }
         // Ye naya function aawaz ko turant rokne ke liye hai
         function stopWinLoseSounds() {
             var win = document.getElementById('sfx-win');
