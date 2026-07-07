@@ -525,6 +525,22 @@
                 isAudioStarted = true;
             }
         }
+            // --- TAB VISIBILITY (HOME SCREEN) BGM CONTROL ---
+        document.addEventListener("visibilitychange", function() {
+            var bgm = document.getElementById('bgm');
+            if (bgm) {
+                if (document.hidden) {
+                    // Jab tu home screen par jayega ya tab change karega, BGM pause ho jayega
+                    bgm.pause(); 
+                } else {
+                    // Jab tu wapas game me aayega, BGM wapas chalega 
+                    // (Lekin sirf tab jab tune pehle se Mute na kiya ho)
+                    if (isAudioStarted && !isGlobalMuted) {
+                        bgm.play().catch(function(e){});
+                    }
+                }
+            }
+        });
     </script>
 </body>
 </html>
