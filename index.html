@@ -442,15 +442,16 @@
             }
         }
 
-        function clearOverlay() {
+            function clearOverlay() {
             if (gameState === 'TOAST_ACTIVE') {
-                vibe(20); document.getElementById('gta-overlay').style.display = 'none';
+                vibe(20); 
+                document.getElementById('gta-overlay').style.display = 'none';
+                stopWinLoseSounds(); // <--- JAISE HI SCREEN HATEGI, AAWAZ CHUP HO JAYEGI
                 gameState = 'IDLE';
                 document.getElementById('hud').classList.remove('hud-locked');
                 var actionBtn = document.getElementById('action-btn'); actionBtn.className = "btn-bet"; actionBtn.innerText = "PLAY";
             }
-        }
-
+                }
         function toggleFairness(show) {
             vibe(15);
             document.getElementById('ui-client').innerText = clientSeed + " (Nonce: " + roundNonce + ")";
