@@ -17,13 +17,17 @@
         
         #machine-body{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;padding-bottom:15px;}
         #csgo-case {
-            position: relative; width: 100%; max-width: 440px; height: 155px;
-            background: linear-gradient(180deg, #111814 0%, #050806 100%);
-            border: 3px solid #d4af37; border-radius: 12px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.95), inset 0 0 40px rgba(0,0,0,0.9);
-            overflow: hidden; display: flex; align-items: center; z-index: 15;
-            contain: layout paint;
-        }
+        position: relative; width: 100%; max-width: 440px; height: 155px;
+        /* YAHAN HAI ASLI JADU: 3D Metallic Gold Gradient Border */
+        background: 
+            linear-gradient(180deg, #111814 0%, #050806 100%) padding-box,
+            linear-gradient(145deg, #ffe57f 0%, #c49a2a 25%, #fff1aa 50%, #9a7313 75%, #ffe57f 100%) border-box;
+        border: 5px solid transparent; /* Border ko thick (mota) kiya hai */
+        border-radius: 12px;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.95), inset 0 0 40px rgba(0,0,0,0.9);
+        overflow: hidden; display: flex; align-items: center; z-index: 15;
+        contain: layout paint;
+            }
         #csgo-case::after {
             content: ''; position: absolute; top: 0; left: 0; right: 0; height: 45%;
             background: linear-gradient(180deg, rgba(255,255,255,0.08) 0%, transparent 100%);
