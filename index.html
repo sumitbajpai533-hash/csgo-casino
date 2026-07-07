@@ -461,19 +461,13 @@
         var bgmAudio = document.getElementById('bgm');
         var isAudioStarted = false;
 
-        function playSfxSafe(id) {
+            function playSfxSafe(id) {
             var sfx = document.getElementById(id);
-            if (sfx) {
-                // Agar click sound hai, to usko 'clone' karke chalao taaki 0 mili-second lag ho
-                if (id === 'sfx-click') {
-                    sfx.cloneNode().play().catch(function(e){});
-                } else {
-                    // Win/Lose sound normal chalega taaki usko roka ja sake
-                    sfx.currentTime = 0; 
-                    sfx.play().catch(function(e){});
-                }
+            if (sfx) { 
+                sfx.currentTime = 0; 
+                sfx.play().catch(function(e){}); 
             }
-        }
+                }
 
         // Ye naya function aawaz ko turant rokne ke liye hai
         function stopWinLoseSounds() {
