@@ -352,12 +352,14 @@
                     var gMain = document.getElementById('gta-main-text');
                     var gSub = document.getElementById('gta-sub-text');
                     if (predeterminedOutcome === 'GREEN' || predeterminedOutcome === 'BLUE') {
-                        gMain.innerText = "PASSED"; gMain.className = "gta-text gta-passed";
-                        gSub.innerText = "+ ₹" + (currentBet * serverMultiplier).toFixed(2);
-                        vibe([60, 40, 60]); vault += (currentBet * serverMultiplier);
-                    } else {
-                        gMain.innerText = "MISSED"; gMain.className = "gta-text gta-missed"; gSub.innerText = ""; vibe(120); 
-                    }
+                gMain.innerText = "PASSED"; gMain.className = "gta-text gta-passed";
+                gSub.innerText = "+ ₹" + (currentBet * serverMultiplier).toFixed(2);
+                vibe([60, 40, 60]); vault += (currentBet * serverMultiplier);
+                playSfxSafe('sfx-win');
+            } else {
+                gMain.innerText = "MISSED"; gMain.className = "gta-text gta-missed"; gSub.innerText = ""; vibe(120); 
+                playSfxSafe('sfx-lose');
+                            }
                     document.getElementById('v-count').innerText = vault.toFixed(2);
                     document.getElementById('gta-overlay').style.display = 'flex';
                 }
